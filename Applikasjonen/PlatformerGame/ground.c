@@ -36,11 +36,14 @@ void DrawGround(SDL_Renderer* renderer, ground* g, Character* player, camera cam
     bool returnVal = false;
     for(int i = 0; i < g->size; i++)
     {
+        if(i * g->dstRect.w > cam.camRect.x - 100 && 
+           i * g->dstRect.w + g->dstRect.w - cam.camRect.x < cam.camRect.w + 100){
         if(g->map1d[i] == 1)
         {
         g->dstRect.x = (i * g->dstRect.w) - cam.camRect.x;
         if(CollideGround(g->dstRect, player)){returnVal=true;}
         SDL_RenderTexture(renderer, g->groundTex, NULL, &g->dstRect);
+        }
         }
     } 
     player->grounded = returnVal;

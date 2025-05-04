@@ -29,7 +29,6 @@ bool Play_Sound(sound* s){
             SDL_Log("Failes to queue audio data: %s", SDL_GetError());
             return false;
         }else{
-        SDL_Log("KaBoom");
         SDL_ResumeAudioStreamDevice(s->stream);
         return true;
     }}
