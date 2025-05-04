@@ -109,3 +109,11 @@ void MakeCoinMap(coinManager* coins, int posX, int posY, const int* map2d, size_
         }
     }
 }
+
+void ResetCoins(coinManager* coins)
+{
+    for(int i = 0; i<coins->size; i++)
+    {
+        coins->coins[i].active = true;
+    }
+}

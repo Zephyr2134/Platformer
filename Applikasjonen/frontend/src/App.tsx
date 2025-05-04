@@ -21,6 +21,9 @@ const App = () => {
       if(eventname == "GotCoin")
       {
         setScore(s=>s+1);
+      }else if(eventname == "ResetScore")
+      {
+        setScore(0);
       }
     }
   }, []);

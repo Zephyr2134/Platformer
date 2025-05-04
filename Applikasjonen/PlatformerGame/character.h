@@ -14,10 +14,10 @@ typedef struct{
     int speed;
     float velocityY;
     bool grounded;
+    bool alive;
 }Character;
 
 void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPos, float width, float height, int speed, const char* imageFilePath);
-void Reset(Character* c);
 bool CharacterJump(Character* c);
 void UpdateCharacter(Character* c, int direction);
 void UpdateViewPos(Character* c, camera cam);

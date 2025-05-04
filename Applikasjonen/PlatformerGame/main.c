@@ -20,8 +20,27 @@ soundManager sounds;
 Character player;
 int direction = 0;
 
+void Reset(Character* c, coinManager* coins)
+{
+    setX(&c->worldPos, 100);
+    setY(&c->worldPos, 400);
+    c->velocityY = 0;
+    c->alive = true;
+    ResetCoins(coins);
+
+    EM_ASM({
+        if(window.dispatchReactEvent){
+            window.dispatchReactEvent("ResetScore");
+        }
+    });
+}
+
 void MainLoop(void)
 {
+    if(!player.alive)
+    {
+        Reset(&player, &coins);
+    }
     while(SDL_PollEvent(&event))
     {
         if(event.type == SDL_EVENT_QUIT)

@@ -4,6 +4,7 @@ void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPo
 {
     c->velocityY = 0;
     c->grounded = false;
+    c->alive = true;
 
     c->speed = speed;
 
@@ -21,12 +22,6 @@ void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPo
     SDL_DestroySurface(image);
 
     c->flip = SDL_FLIP_NONE;
-}
-
-void Reset(Character* c)
-{
-    setX(&c->worldPos, 100);
-    setY(&c->worldPos, 400);
 }
 
 bool CharacterJump(Character* c)
@@ -58,12 +53,12 @@ void UpdateCharacter(Character* c, int direction)
 
     if(c->dstRect.y < 600){
     changeX(&c->worldPos, direction*c->speed);
-}
+    }
 changeY(&c->worldPos, c->velocityY);
 
     if(c->dstRect.y > 2000)
         {
-        Reset(c);
+        c->alive = false;
         }
 }
 
