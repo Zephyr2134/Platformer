@@ -3,7 +3,7 @@
 void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPos, float width, float height, int speed, const char* imageFilePath)
 {
     c->velocityY = 0;
-    c->grounded = true;
+    c->grounded = false;
 
     c->speed = speed;
 
@@ -28,33 +28,19 @@ bool CharacterJump(Character* c)
     if(c->grounded)
     {
     c->velocityY = -7;
+    c->grounded = false;
     return true;
     }
     return false;
 }
 
-void UpdateViewPos(Character* c)
-{
-    c->dstRect.x = getX(c->worldPos);
-    c->dstRect.y = getY(c->worldPos);
-}
-
 void UpdateCharacter(Character* c, int direction)
 {
-    if(getY(c->worldPos) + c->dstRect.h < 500)
-    {
-        c->grounded = false;
-    }else{
-        if(getY(c->worldPos) + c->dstRect.h + c->velocityY >= 500)
-        {
-            setY(&c->worldPos, 500 - c->dstRect.h);
-            c->velocityY = 0;
-            c->grounded = true;
-        }
-    }
     if(!c->grounded)
     {
         c->velocityY += 0.2f;
+    }else{
+        c->velocityY = 0;
     }
 
     if(direction > 0)
@@ -66,8 +52,12 @@ void UpdateCharacter(Character* c, int direction)
 
     changeY(&c->worldPos, c->velocityY);
     changeX(&c->worldPos, direction*c->speed);
-    
-    UpdateViewPos(c);
+}
+
+void UpdateViewPos(Character* c, camera cam)
+{
+    c->dstRect.x = getX(c->worldPos) - cam.camRect.x;
+    c->dstRect.y = getY(c->worldPos);
 }
 
 void DrawCharacter(SDL_Renderer* renderer, Character c)

@@ -3,6 +3,9 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include "camera.h"
+#include "character.h"
+
 typedef struct{
     SDL_Texture* groundTex;
     SDL_FRect dstRect;
@@ -12,5 +15,6 @@ typedef struct{
 }ground;
 
 void MakeGround(SDL_Renderer* renderer, ground* g, int mapSize, const int* map, float tileSize, const char* filepath);
-void DrawGround(SDL_Renderer* renderer, ground* g);
+bool CollideGround(SDL_FRect recA, Character* c);
+void DrawGround(SDL_Renderer* renderer, ground* g, Character* player, camera cam);
 #endif

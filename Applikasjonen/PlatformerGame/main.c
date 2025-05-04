@@ -4,11 +4,13 @@
 #include "character.h"
 #include "soundManager.h"
 #include "ground.h"
+#include "camera.h"
 
 SDL_Renderer* renderer;
 SDL_Event event;
 
 ground field;
+camera cam;
 
 sound music;
 soundManager sounds;
@@ -65,6 +67,8 @@ void MainLoop(void)
         
 
     UpdateCharacter(&player, direction);
+    UpdateCamPos(&cam, player.worldPos);
+    UpdateViewPos(&player, cam);
 
     Play_Sound(&music);
     playSounds(&sounds);
@@ -72,7 +76,7 @@ void MainLoop(void)
     SDL_SetRenderDrawColor(renderer, 174, 243, 231, 255);
     SDL_RenderClear(renderer);
     DrawCharacter(renderer, player);
-    DrawGround(renderer, &field);
+    DrawGround(renderer, &field, &player, cam);
     SDL_RenderPresent(renderer);
 }
 
@@ -117,7 +121,9 @@ int main()
         0,0,1,1,1,1,1,0,1,1,
         1,1,1,0,1,1,1,1,1,1
     };
-    MakeGround(renderer, &field, 100, map, 50, "assets/Ground.png");
+    MakeGround(renderer, &field, 100, map, 60, "assets/Ground.png");
+
+    InitCamera(&cam, 1200, 550, 6000);
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 

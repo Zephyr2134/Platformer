@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 11)
 find_package(SDL3 REQUIRED)
 find_package(SDL3_image REQUIRED)
 
-add_executable(game main.c vector2d.c character.c soundManager.c ground.c)
+add_executable(game main.c vector2d.c character.c soundManager.c ground.c camera.c)
 target_link_libraries(game PRIVATE SDL3::SDL3 SDL3_image::SDL3_image-static)
 
 set_target_properties(game PROPERTIES SUFFIX ".html")
