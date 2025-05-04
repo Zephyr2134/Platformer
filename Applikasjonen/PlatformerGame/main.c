@@ -5,10 +5,12 @@
 #include "soundManager.h"
 #include "ground.h"
 #include "camera.h"
+#include "coin.h"
 
 SDL_Renderer* renderer;
 SDL_Event event;
 
+coinManager coins;
 ground field;
 camera cam;
 
@@ -63,12 +65,17 @@ void MainLoop(void)
                     break;
             }
         }
+        if(event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+        {
+            AddCoin(&coins, 100, 450, 1);
+        }
         }
         
 
     UpdateCharacter(&player, direction);
     UpdateCamPos(&cam, player.worldPos);
     UpdateViewPos(&player, cam);
+    CollideCoins(coins, player.dstRect, cam);
 
     Play_Sound(&music);
     playSounds(&sounds);
@@ -76,6 +83,7 @@ void MainLoop(void)
     SDL_SetRenderDrawColor(renderer, 174, 243, 231, 255);
     SDL_RenderClear(renderer);
     DrawCharacter(renderer, player);
+    RenderCoins(renderer, &coins, cam);
     DrawGround(renderer, &field, &player, cam);
     SDL_RenderPresent(renderer);
 }
@@ -124,6 +132,9 @@ int main()
     MakeGround(renderer, &field, 100, map, 80, "assets/Ground.png");
 
     InitCamera(&cam, 1200, 550, 6000);
+
+    InitCoinManager(renderer, &coins, "assets/image2.png");
+    
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 
