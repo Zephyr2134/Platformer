@@ -1,15 +1,16 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <Emscripten.h>
+#include "character.h"
 
 SDL_Renderer* renderer;
-SDL_Texture* texture;
+Character player;
 
 void MainLoop(void)
 {
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderClear(renderer);
-    SDL_RenderTexture(renderer, texture, NULL, NULL);
+    DrawCharacter(renderer, player);
     SDL_RenderPresent(renderer);
 }
 
@@ -31,13 +32,7 @@ int main()
         SDL_Log("Failed to initialize renderer: %s", SDL_GetError());
         return 1;
     }
-    SDL_Surface* image = IMG_Load("assets/image2.png");
-    if(!image){
-        SDL_Log("Failed to load image: %s", SDL_GetError());
-        return 1;
-    }
-    texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_DestroySurface(image);
+    CreateCharacter(renderer, &player, 0, 0, 100, 100, 5, "assets/Mario.png");
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 
