@@ -121,13 +121,15 @@ int main()
         0,0,1,1,1,1,1,0,1,1,
         1,1,1,0,1,1,1,1,1,1
     };
-    MakeGround(renderer, &field, 100, map, 60, "assets/Ground.png");
+    MakeGround(renderer, &field, 100, map, 80, "assets/Ground.png");
 
     InitCamera(&cam, 1200, 550, 6000);
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 
     freeSound(&sounds);
+    FreeCharacter(&player);
+    FreeGround(&field);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

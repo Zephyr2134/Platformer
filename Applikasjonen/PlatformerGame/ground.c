@@ -6,7 +6,7 @@ void MakeGround(SDL_Renderer* renderer, ground* g, int mapSize, const int* map, 
 {
     g->dstRect.w = tileSize;
     g->dstRect.h = tileSize;
-    g->dstRect.y = 550 - tileSize;
+    g->dstRect.y = 550 - 50;
 
     g->size = mapSize;
     g->map1d = malloc(mapSize * sizeof(int));
@@ -44,4 +44,21 @@ void DrawGround(SDL_Renderer* renderer, ground* g, Character* player, camera cam
         }
     } 
     player->grounded = returnVal;
+}
+
+void FreeGround(ground* g)
+{
+    if(g == NULL) return;
+
+    if(g->groundTex != NULL)
+    {
+        SDL_DestroyTexture(g->groundTex);
+        g->groundTex = NULL;
+    }
+
+    if(g->map1d != NULL)
+    {
+        free(g->map1d);
+        g->map1d = NULL;
+    }
 }

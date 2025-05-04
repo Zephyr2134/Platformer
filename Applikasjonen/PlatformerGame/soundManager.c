@@ -23,6 +23,7 @@ bool Play_Sound(sound* s){
             SDL_Log("Error: Attempted to play sound on an invalid stream of buffer!");
             return true;
         }
+        if(SDL_GetAudioStreamAvailable(s->stream) < s->audioLen){
         if(!SDL_PutAudioStreamData(s->stream, s->audioBuf, s->audioLen))
         {
             SDL_Log("Failes to queue audio data: %s", SDL_GetError());
@@ -31,7 +32,8 @@ bool Play_Sound(sound* s){
         SDL_Log("KaBoom");
         SDL_ResumeAudioStreamDevice(s->stream);
         return true;
-    }
+    }}
+    return true;
 }
 
 void Destroy_Sound(sound* s){

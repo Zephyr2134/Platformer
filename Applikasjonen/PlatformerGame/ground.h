@@ -17,4 +17,5 @@ typedef struct{
 void MakeGround(SDL_Renderer* renderer, ground* g, int mapSize, const int* map, float tileSize, const char* filepath);
 bool CollideGround(SDL_FRect recA, Character* c);
 void DrawGround(SDL_Renderer* renderer, ground* g, Character* player, camera cam);
+void FreeGround(ground* g);
 #endif

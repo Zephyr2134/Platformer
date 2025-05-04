@@ -23,6 +23,12 @@ void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPo
     c->flip = SDL_FLIP_NONE;
 }
 
+void Reset(Character* c)
+{
+    setX(&c->worldPos, 100);
+    setY(&c->worldPos, 400);
+}
+
 bool CharacterJump(Character* c)
 {
     if(c->grounded)
@@ -50,8 +56,15 @@ void UpdateCharacter(Character* c, int direction)
         c->flip = SDL_FLIP_HORIZONTAL;
     }
 
-    changeY(&c->worldPos, c->velocityY);
+    if(c->dstRect.y < 600){
     changeX(&c->worldPos, direction*c->speed);
+}
+changeY(&c->worldPos, c->velocityY);
+
+    if(c->dstRect.y > 2000)
+        {
+        Reset(c);
+        }
 }
 
 void UpdateViewPos(Character* c, camera cam)
@@ -63,4 +76,14 @@ void UpdateViewPos(Character* c, camera cam)
 void DrawCharacter(SDL_Renderer* renderer, Character c)
 {
     SDL_RenderTextureRotated(renderer, c.texture, NULL, &c.dstRect, 0, 0, c.flip);
+}
+
+void FreeCharacter(Character* c)
+{
+    if(c == NULL) return;
+
+    if(c->texture != NULL) {
+        SDL_DestroyTexture(c->texture);
+        c->texture = NULL;
+    }
 }
