@@ -8,6 +8,7 @@ SDL_Renderer* renderer;
 SDL_Event event;
 
 sound music;
+soundManager sounds;
 
 Character player;
 int direction = 0;
@@ -29,6 +30,12 @@ void MainLoop(void)
                     break;
                 case SDLK_A:
                     direction = -1;
+                    break;
+                case SDLK_SPACE:
+                    if(CharacterJump(&player))
+                    {
+                    pushBack(&sounds, "assets/jump.wav");
+                    }
                     break;
             }
         }
@@ -57,6 +64,7 @@ void MainLoop(void)
     UpdateCharacter(&player, direction);
 
     Play_Sound(&music);
+    playSounds(&sounds);
 
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -89,11 +97,13 @@ int main()
     }
 
     music = Create_Sound("assets/GameBackgroundMusic.wav");
+    initSoundManager(&sounds);
 
     CreateCharacter(renderer, &player, 0, 0, 100, 100, 3, "assets/Mario.png");
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 
+    freeSound(&sounds);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
