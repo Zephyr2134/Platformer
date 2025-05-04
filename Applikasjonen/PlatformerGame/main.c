@@ -2,9 +2,12 @@
 #include <SDL3_image/SDL_image.h>
 #include <Emscripten.h>
 #include "character.h"
+#include "soundManager.h"
 
 SDL_Renderer* renderer;
 SDL_Event event;
+
+sound music;
 
 Character player;
 int direction = 0;
@@ -53,6 +56,8 @@ void MainLoop(void)
 
     UpdateCharacter(&player, direction);
 
+    Play_Sound(&music);
+
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderClear(renderer);
     DrawCharacter(renderer, player);
@@ -65,12 +70,12 @@ int main()
     SDL_SetHint("SDL_HINT_EMSCRIPTEN_CANVAS_ELEMENT_ID", "#canvas");
     #endif
 
-    if(!SDL_Init(SDL_INIT_EVENTS))
+    if(!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_AUDIO))
     {
-        SDL_Log("Could'nt initialize events: %s", SDL_GetError());
+        SDL_Log("Could'nt initialize: %s", SDL_GetError());
     }
 
-    SDL_Window* window = SDL_CreateWindow("PlatformerGame", 800, 800, 0);
+    SDL_Window* window = SDL_CreateWindow("PlatformerGame", 1200, 550, 0);
     if(!window)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -82,6 +87,8 @@ int main()
         SDL_Log("Failed to initialize renderer: %s", SDL_GetError());
         return 1;
     }
+
+    music = Create_Sound("assets/GameBackgroundMusic.wav");
 
     CreateCharacter(renderer, &player, 0, 0, 100, 100, 3, "assets/Mario.png");
 
