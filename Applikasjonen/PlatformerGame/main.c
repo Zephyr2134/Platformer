@@ -65,17 +65,22 @@ void MainLoop(void)
                     break;
             }
         }
-        if(event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
-        {
-            AddCoin(&coins, 100, 450, 1);
-        }
         }
         
 
     UpdateCharacter(&player, direction);
     UpdateCamPos(&cam, player.worldPos);
     UpdateViewPos(&player, cam);
-    CollideCoins(coins, player.dstRect, cam);
+    int colResult = CollideCoins(coins, player.dstRect, cam);
+    for(int i = 0; i<colResult; i++)
+    {
+        pushBack(&sounds, "assets/pickupCoin.wav");
+        EM_ASM({
+            if(window.dispatchReactEvent){
+                window.dispatchReactEvent("GotCoin");
+            }
+        });
+    }
 
     Play_Sound(&music);
     playSounds(&sounds);
@@ -133,14 +138,37 @@ int main()
 
     InitCamera(&cam, 1200, 550, 6000);
 
-    InitCoinManager(renderer, &coins, "assets/image2.png");
+    InitCoinManager(renderer, &coins, "assets/Coin.png");
+
+    int coinMap[400] = {
+        1,0,1,1,1,0,1,0,1,0,1,0,1,0,0,1,1,1,1,0,
+        1,1,0,0,1,1,0,0,1,1,1,0,0,0,1,0,1,1,1,1,
+        0,0,1,0,0,1,0,1,1,1,1,1,1,0,0,1,0,0,1,1,
+        1,1,0,1,0,1,0,1,0,1,0,0,1,1,1,0,0,0,1,0,
     
+        1,0,1,1,1,1,0,1,0,0,1,0,1,1,0,0,1,1,1,0,
+        1,1,1,0,0,1,1,0,1,0,1,0,1,1,0,1,0,1,1,1,
+        1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,1,1,0,1,1,
+        0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,1,0,1,1,1,
+    
+        1,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,0,1,1,1,
+        1,1,0,1,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,0,
+        1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,1,0,1,0,
+        1,1,1,0,1,0,0,1,0,1,1,1,0,1,1,1,0,1,0,1,
+    
+        1,0,1,0,1,1,1,1,0,1,1,1,0,0,1,1,1,0,1,1,
+        1,0,1,1,1,0,1,0,0,1,1,1,0,1,1,0,1,1,0,1,
+        0,1,1,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,0,0,
+        1,1,1,1,0,1,0,1,1,0,1,1,1,0,1,0,1,1,1,1
+    };
+    MakeCoinMap(&coins, 500, 300, coinMap, 4, 100);
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 
     freeSound(&sounds);
     FreeCharacter(&player);
     FreeGround(&field);
+    FreeCoins(&coins);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
