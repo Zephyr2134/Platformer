@@ -18,15 +18,17 @@ void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPo
     SDL_DestroySurface(image);
 }
 
-void UpdateCharacter(Character* c, int direction)
-{
-    changeX(&c->worldPos, direction*c->speed);
-}
-
 void UpdateViewPos(Character* c)
 {
     c->dstRect.x = getX(c->worldPos);
     c->dstRect.y = getY(c->worldPos);
+}
+
+void UpdateCharacter(Character* c, int direction)
+{
+    changeX(&c->worldPos, direction*c->speed);
+
+    UpdateViewPos(c);
 }
 
 void DrawCharacter(SDL_Renderer* renderer, Character c)
