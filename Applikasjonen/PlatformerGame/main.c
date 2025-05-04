@@ -3,9 +3,12 @@
 #include <Emscripten.h>
 #include "character.h"
 #include "soundManager.h"
+#include "ground.h"
 
 SDL_Renderer* renderer;
 SDL_Event event;
+
+ground field;
 
 sound music;
 soundManager sounds;
@@ -66,9 +69,10 @@ void MainLoop(void)
     Play_Sound(&music);
     playSounds(&sounds);
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 174, 243, 231, 255);
     SDL_RenderClear(renderer);
     DrawCharacter(renderer, player);
+    DrawGround(renderer, &field);
     SDL_RenderPresent(renderer);
 }
 
@@ -99,7 +103,21 @@ int main()
     music = Create_Sound("assets/GameBackgroundMusic.wav");
     initSoundManager(&sounds);
 
-    CreateCharacter(renderer, &player, 0, 0, 100, 100, 3, "assets/Mario.png");
+    CreateCharacter(renderer, &player, 0, 0, 50, 50, 2, "assets/Mario.png");
+
+    int map[100] = {
+        1,1,1,1,1,0,0,1,1,1,
+        1,1,0,1,1,1,1,0,1,1,
+        1,1,1,1,0,0,1,1,1,1,
+        1,0,1,1,1,1,0,1,1,0,
+        1,1,1,1,1,1,0,0,1,1,
+        1,0,1,1,1,1,1,1,1,0,
+        1,1,1,1,0,1,1,1,0,1,
+        1,1,1,1,1,0,1,1,1,1,
+        0,0,1,1,1,1,1,0,1,1,
+        1,1,1,0,1,1,1,1,1,1
+    };
+    MakeGround(renderer, &field, 100, map, 50, "assets/Ground.png");
 
     emscripten_set_main_loop(MainLoop, 0, 1);
 

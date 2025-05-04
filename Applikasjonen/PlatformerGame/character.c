@@ -27,7 +27,7 @@ bool CharacterJump(Character* c)
 {
     if(c->grounded)
     {
-    c->velocityY = -10;
+    c->velocityY = -7;
     return true;
     }
     return false;
