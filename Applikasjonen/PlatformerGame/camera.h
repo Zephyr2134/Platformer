@@ -4,12 +4,13 @@
 #include <SDL3/SDL.h>
 #include "vector2d.h"
 
-typedef struct{
+typedef struct
+{
     SDL_FRect camRect;
     int mapWidth;
-}camera;
+} camera;
 
-void InitCamera(camera* cam, int width, int height, int mapWidth);
-void UpdateCamPos(camera* cam, Vector2D targetPos);
+void InitCamera(camera *cam, int width, int height, int mapWidth);
+void UpdateCamPos(camera *cam, Vector2D targetPos);
 
 #endif

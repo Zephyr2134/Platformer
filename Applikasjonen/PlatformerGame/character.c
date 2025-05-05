@@ -1,6 +1,6 @@
 #include "character.h"
 
-void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPos, float width, float height, int speed, const char* imageFilePath)
+void CreateCharacter(SDL_Renderer *renderer, Character *c, float xPos, float yPos, float width, float height, int speed, const char *imageFilePath)
 {
     c->velocityY = 0;
     c->grounded = false;
@@ -16,7 +16,7 @@ void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPo
     setX(&c->worldPos, xPos);
     setY(&c->worldPos, yPos);
 
-    SDL_Surface* image = IMG_Load(imageFilePath);
+    SDL_Surface *image = IMG_Load(imageFilePath);
     c->texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_SetTextureScaleMode(c->texture, SDL_SCALEMODE_NEAREST);
     SDL_DestroySurface(image);
@@ -24,60 +24,67 @@ void CreateCharacter(SDL_Renderer* renderer, Character* c, float xPos, float yPo
     c->flip = SDL_FLIP_NONE;
 }
 
-bool CharacterJump(Character* c)
+bool CharacterJump(Character *c)
 {
-    if(c->grounded)
+    if (c->grounded)
     {
-    c->velocityY = -7;
-    c->grounded = false;
-    return true;
+        c->velocityY = -7;
+        c->grounded = false;
+        return true;
     }
     return false;
 }
 
-void UpdateCharacter(Character* c, int direction)
+void UpdateCharacter(Character *c, int direction)
 {
-    if(!c->grounded)
+    if (!c->grounded)
     {
         c->velocityY += 0.2f;
-    }else{
+    }
+    else
+    {
         c->velocityY = 0;
     }
 
-    if(direction > 0)
+    if (direction > 0)
     {
         c->flip = SDL_FLIP_NONE;
-    }else if(direction < 0){
+    }
+    else if (direction < 0)
+    {
         c->flip = SDL_FLIP_HORIZONTAL;
     }
 
-    if(c->dstRect.y < 600){
-    changeX(&c->worldPos, direction*c->speed);
+    if (c->dstRect.y < 600)
+    {
+        changeX(&c->worldPos, direction * c->speed);
     }
-changeY(&c->worldPos, c->velocityY);
+    changeY(&c->worldPos, c->velocityY);
 
-    if(c->dstRect.y > 2000)
-        {
+    if (c->dstRect.y > 2000)
+    {
         c->alive = false;
-        }
+    }
 }
 
-void UpdateViewPos(Character* c, camera cam)
+void UpdateViewPos(Character *c, camera cam)
 {
     c->dstRect.x = getX(c->worldPos) - cam.camRect.x;
     c->dstRect.y = getY(c->worldPos);
 }
 
-void DrawCharacter(SDL_Renderer* renderer, Character c)
+void DrawCharacter(SDL_Renderer *renderer, Character c)
 {
     SDL_RenderTextureRotated(renderer, c.texture, NULL, &c.dstRect, 0, 0, c.flip);
 }
 
-void FreeCharacter(Character* c)
+void FreeCharacter(Character *c)
 {
-    if(c == NULL) return;
+    if (c == NULL)
+        return;
 
-    if(c->texture != NULL) {
+    if (c->texture != NULL)
+    {
         SDL_DestroyTexture(c->texture);
         c->texture = NULL;
     }

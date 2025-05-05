@@ -7,7 +7,7 @@
 #include "camera.h"
 #include "coin.h"
 
-SDL_Renderer* renderer;
+SDL_Renderer *renderer;
 SDL_Event event;
 
 coinManager coins;
@@ -20,7 +20,7 @@ soundManager sounds;
 Character player;
 int direction = 0;
 
-void Reset(Character* c, coinManager* coins)
+void Reset(Character *c, coinManager *coins)
 {
     setX(&c->worldPos, 100);
     setY(&c->worldPos, 400);
@@ -29,7 +29,8 @@ void Reset(Character* c, coinManager* coins)
     ResetCoins(coins);
 
     EM_ASM({
-        if(window.dispatchReactEvent){
+        if (window.dispatchReactEvent)
+        {
             window.dispatchReactEvent("ResetScore");
         }
     });
@@ -37,65 +38,65 @@ void Reset(Character* c, coinManager* coins)
 
 void MainLoop(void)
 {
-    if(!player.alive)
+    if (!player.alive)
     {
         Reset(&player, &coins);
     }
-    while(SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event))
     {
-        if(event.type == SDL_EVENT_QUIT)
+        if (event.type == SDL_EVENT_QUIT)
         {
             emscripten_cancel_main_loop();
         }
-        if(event.type == SDL_EVENT_KEY_DOWN)
+        if (event.type == SDL_EVENT_KEY_DOWN)
         {
-            switch(event.key.key)
+            switch (event.key.key)
             {
-                case SDLK_D:
-                    direction = 1;
-                    break;
-                case SDLK_A:
-                    direction = -1;
-                    break;
-                case SDLK_SPACE:
-                    if(CharacterJump(&player))
-                    {
+            case SDLK_D:
+                direction = 1;
+                break;
+            case SDLK_A:
+                direction = -1;
+                break;
+            case SDLK_SPACE:
+                if (CharacterJump(&player))
+                {
                     pushBack(&sounds, "assets/jump.wav");
-                    }
-                    break;
+                }
+                break;
             }
         }
-        if(event.type == SDL_EVENT_KEY_UP)
+        if (event.type == SDL_EVENT_KEY_UP)
         {
-            switch(event.key.key)
+            switch (event.key.key)
             {
-                case SDLK_D:
-                    if(direction > 0)
-                    {
+            case SDLK_D:
+                if (direction > 0)
+                {
                     direction = 0;
-                    }
-                    break;
+                }
+                break;
 
-                case SDLK_A:
-                    if(direction < 0)
-                    {
+            case SDLK_A:
+                if (direction < 0)
+                {
                     direction = 0;
-                    }
-                    break;
+                }
+                break;
             }
         }
-        }
-        
+    }
 
     UpdateCharacter(&player, direction);
     UpdateCamPos(&cam, player.worldPos);
     UpdateViewPos(&player, cam);
     int colResult = CollideCoins(coins, player.dstRect, cam);
-    for(int i = 0; i<colResult; i++)
+    for (int i = 0; i < colResult; i++)
     {
         pushBack(&sounds, "assets/pickupCoin.wav");
         EM_ASM({
-            if(window.dispatchReactEvent){
+            if (window.dispatchReactEvent)
+            {
                 window.dispatchReactEvent("GotCoin");
             }
         });
@@ -114,23 +115,23 @@ void MainLoop(void)
 
 int main()
 {
-    #ifdef __EMSRIPTEN__
+#ifdef __EMSRIPTEN__
     SDL_SetHint("SDL_HINT_EMSCRIPTEN_CANVAS_ELEMENT_ID", "#canvas");
-    #endif
+#endif
 
-    if(!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_AUDIO))
+    if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_AUDIO))
     {
         SDL_Log("Could'nt initialize: %s", SDL_GetError());
     }
 
-    SDL_Window* window = SDL_CreateWindow("PlatformerGame", 1200, 550, 0);
-    if(!window)
+    SDL_Window *window = SDL_CreateWindow("PlatformerGame", 1200, 550, 0);
+    if (!window)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return 1;
     }
     renderer = SDL_CreateRenderer(window, NULL);
-    if(!renderer)
+    if (!renderer)
     {
         SDL_Log("Failed to initialize renderer: %s", SDL_GetError());
         return 1;
@@ -142,17 +143,16 @@ int main()
     CreateCharacter(renderer, &player, 0, 0, 50, 50, 2, "assets/Mario.png");
 
     int map[100] = {
-        1,1,1,1,1,0,0,1,1,1,
-        1,1,0,1,1,1,1,0,1,1,
-        1,1,1,1,0,0,1,1,1,1,
-        1,0,1,1,1,1,0,1,1,0,
-        1,1,1,1,1,1,0,0,1,1,
-        1,0,1,1,1,1,1,1,1,0,
-        1,1,1,1,0,1,1,1,0,1,
-        1,1,1,1,1,0,1,1,1,1,
-        0,0,1,1,1,1,1,0,1,1,
-        1,1,1,0,1,1,1,1,1,1
-    };
+        1, 1, 1, 1, 1, 0, 0, 1, 1, 1,
+        1, 1, 0, 1, 1, 1, 1, 0, 1, 1,
+        1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+        1, 0, 1, 1, 1, 1, 0, 1, 1, 0,
+        1, 1, 1, 1, 1, 1, 0, 0, 1, 1,
+        1, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+        1, 1, 1, 1, 0, 1, 1, 1, 0, 1,
+        1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+        0, 0, 1, 1, 1, 1, 1, 0, 1, 1,
+        1, 1, 1, 0, 1, 1, 1, 1, 1, 1};
     MakeGround(renderer, &field, 100, map, 80, "assets/Ground.png");
 
     InitCamera(&cam, 1200, 550, 6000);
@@ -160,26 +160,25 @@ int main()
     InitCoinManager(renderer, &coins, "assets/Coin.png");
 
     int coinMap[400] = {
-        1,0,1,1,1,0,1,0,1,0,1,0,1,0,0,1,1,1,1,0,
-        1,1,0,0,1,1,0,0,1,1,1,0,0,0,1,0,1,1,1,1,
-        0,0,1,0,0,1,0,1,1,1,1,1,1,0,0,1,0,0,1,1,
-        1,1,0,1,0,1,0,1,0,1,0,0,1,1,1,0,0,0,1,0,
-    
-        1,0,1,1,1,1,0,1,0,0,1,0,1,1,0,0,1,1,1,0,
-        1,1,1,0,0,1,1,0,1,0,1,0,1,1,0,1,0,1,1,1,
-        1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,1,1,0,1,1,
-        0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,1,0,1,1,1,
-    
-        1,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,0,1,1,1,
-        1,1,0,1,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,0,
-        1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,1,0,1,0,
-        1,1,1,0,1,0,0,1,0,1,1,1,0,1,1,1,0,1,0,1,
-    
-        1,0,1,0,1,1,1,1,0,1,1,1,0,0,1,1,1,0,1,1,
-        1,0,1,1,1,0,1,0,0,1,1,1,0,1,1,0,1,1,0,1,
-        0,1,1,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,0,0,
-        1,1,1,1,0,1,0,1,1,0,1,1,1,0,1,0,1,1,1,1
-    };
+        1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0,
+        1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1,
+        0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1,
+        1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0,
+
+        1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0,
+        1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1,
+        1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1,
+        0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1,
+
+        1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1,
+        1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0,
+        1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0,
+        1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1,
+
+        1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1,
+        1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1,
+        0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0,
+        1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1};
     MakeCoinMap(&coins, 500, 300, coinMap, 4, 100);
 
     emscripten_set_main_loop(MainLoop, 0, 1);

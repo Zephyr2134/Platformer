@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "RSXnPwE0diY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Nikolai Stanes\\OneDrive - Innlandet fylkeskommune\\Documents\\GithubRepos\\Platformer\\Applikasjonen\\GameApi\\GameApi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Nikolai Stanes\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.4\\microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
+    "C:\\Users\\Nikolai Stanes\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

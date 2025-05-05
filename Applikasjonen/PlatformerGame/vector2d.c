@@ -1,25 +1,25 @@
 #include "vector2d.h"
 
-void MakeVector(Vector2D* vector, float xValue, float yValue)
+void MakeVector(Vector2D *vector, float xValue, float yValue)
 {
     vector->x = xValue;
     vector->y = yValue;
 }
 
-void setX(Vector2D* vector, float xValue)
+void setX(Vector2D *vector, float xValue)
 {
     vector->x = xValue;
 }
-void setY(Vector2D* vector, float yValue)
+void setY(Vector2D *vector, float yValue)
 {
     vector->y = yValue;
 }
 
-void changeX(Vector2D* vector, float xValue)
+void changeX(Vector2D *vector, float xValue)
 {
     vector->x += xValue;
 }
-void changeY(Vector2D* vector, float yValue)
+void changeY(Vector2D *vector, float yValue)
 {
     vector->y += yValue;
 }
